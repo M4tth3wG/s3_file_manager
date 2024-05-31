@@ -1,9 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using s3_file_manager_backend.Data;
+using s3_file_manager_backend.Models;
+using System.Globalization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContextPool<FileDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("FileDb")));
+
 
 var app = builder.Build();
 
@@ -14,29 +23,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
 
-app.MapGet("/weatherforecast", () =>
+app.MapPost("/uploadfile", async (FileDbContext dbContext, StoredFile file) =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    // Add the provided file to the database
+    await dbContext.Files.AddAsync(file);
+    await dbContext.SaveChangesAsync();
+
+    // Return a response indicating success
+    return Results.Created($"/file/{file.Id}", file);
 })
-.WithName("GetWeatherForecast")
+.WithName("PostFile")
 .WithOpenApi();
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

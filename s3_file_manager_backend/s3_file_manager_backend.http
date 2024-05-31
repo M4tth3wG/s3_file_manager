@@ -1,6 +1,6 @@
 @s3_file_manager_backend_HostAddress = http://localhost:5271
 
-GET {{s3_file_manager_backend_HostAddress}}/weatherforecast/
+POST {{s3_file_manager_backend_HostAddress}}/uploadfile/
 Accept: application/json
 
 ###
