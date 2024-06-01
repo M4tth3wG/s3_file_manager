@@ -43,6 +43,17 @@ namespace s3_file_manager_backend.Services
             }
         }
 
+        public async Task DeleteFileAsync(string keyName)
+        {
+            var deleteRequest = new DeleteObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = keyName
+            };
+
+            await _s3Client.DeleteObjectAsync(deleteRequest);
+        }
+
         public string GenerateFileLink(string keyName)
         {
             var request = new GetPreSignedUrlRequest

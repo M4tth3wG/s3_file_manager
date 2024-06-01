@@ -8,6 +8,7 @@ using Amazon.S3;
 using Microsoft.AspNetCore.Mvc;
 using s3_file_manager_backend.Services;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,7 @@ app.MapGet("antiforgery/token", (IAntiforgery forgeryService, HttpContext contex
     return TypedResults.Content(xsrfToken, "text/plain");
 });
 
-app.MapPost("/uploadfile", async (IFormFile file, string fileName, FileDbContext dbContext, S3Service s3Service) =>
+app.MapPost("/file/upload", async (IFormFile file, string fileName, FileDbContext dbContext, S3Service s3Service) =>
 {
     if (file == null || string.IsNullOrEmpty(fileName))
     {
@@ -66,6 +67,58 @@ app.MapPost("/uploadfile", async (IFormFile file, string fileName, FileDbContext
     await dbContext.SaveChangesAsync();
 
     return Results.Created($"/file/{storedFile.Id}", storedFile);
+})
+.WithOpenApi();
+
+app.MapGet("/file/delete", async (Guid fileId, FileDbContext dbContext, S3Service s3Service) =>
+{
+    await s3Service.DeleteFileAsync(fileId.ToString());
+
+    var file = await dbContext.Files.FindAsync(fileId);
+    if (file != null)
+    {
+        dbContext.Files.Remove(file);
+        await dbContext.SaveChangesAsync();
+        return Results.Ok();
+    }
+
+    return Results.NotFound();
+}
+)
+.WithOpenApi();
+
+app.MapGet("/file/list", async (FileDbContext dbContext) =>
+{
+    var files = await dbContext.Files.ToListAsync();
+    return files;
+}
+)
+.WithOpenApi();
+
+app.MapGet("/file/edit", async (Guid fileId, string newName, FileDbContext dbContext) =>
+{
+    var file = await dbContext.Files.FindAsync(fileId);
+    if (file != null)
+    {
+        file.Name = newName;
+        await dbContext.SaveChangesAsync();
+        return Results.Ok();
+    }
+    return Results.NotFound();
+}
+)
+.WithOpenApi();
+
+app.MapGet("/file/get", async (Guid fileId, FileDbContext dbContext) =>
+{
+    var file = await dbContext.Files.FindAsync(fileId);
+
+    if (file == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Json(file);
 })
 .WithOpenApi();
 
