@@ -34,8 +34,12 @@ function App() {
 
   return (
     <div className="App">
-      <FileList files={files} setFiles={setFiles} fetchFiles={fetchFiles} />
-      <FileUpload fetchFiles={fetchFiles} />
+      <div className="file-list-container">
+        <FileList files={files} setFiles={setFiles} fetchFiles={fetchFiles} />
+      </div>
+      <div className="file-upload">
+        <FileUpload fetchFiles={fetchFiles} />
+      </div>
     </div>
   );
 }

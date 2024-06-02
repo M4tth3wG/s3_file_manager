@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../App';
+import './css/FileUpload.css'
 
 const FileUpload = ({ fetchFiles }) => {
     const [fileName, setFileName] = useState('');
@@ -75,18 +76,24 @@ const FileUpload = ({ fetchFiles }) => {
 
     return (
         <div className="file-upload-container">
-            <input
-                type="text"
-                placeholder="Wprowadź nazwę pliku"
-                value={fileName}
-                onChange={handleFileNameChange}
-            />
+            <div className="input-wrapper">
+                <label htmlFor="file-name-input">Nazwa pliku</label>
+                <input
+                    type="text"
+                    id="file-name-input"
+                    placeholder="Wprowadź nazwę pliku"
+                    value={fileName}
+                    onChange={handleFileNameChange}
+                    className="file-name-input"
+                />
+            </div>
             <input
                 type="file"
                 onChange={handleFileChange}
                 ref={fileInputRef}
+                className="file-input"
             />
-            <button onClick={handleSubmit}>Wyślij</button>
+            <button onClick={handleSubmit} className="submit-button">Wyślij</button>
         </div>
     );
 };

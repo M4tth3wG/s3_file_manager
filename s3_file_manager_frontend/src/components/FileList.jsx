@@ -121,7 +121,7 @@ function FileList({ files, setFiles, fetchFiles }){
           ))}
         </tbody>
       </table>
-      <Modal show={showModal} handleClose={handleCloseModal} handleSave={handleSaveInput} title={"Wpropadź nową nazwę pliku"} defaultValue={userInput}/>
+      <Modal show={showModal} handleClose={handleCloseModal} handleSave={handleSaveInput} title={"Edytuj nazwę pliku"} defaultValue={userInput}/>
     </div>
   );
 }
