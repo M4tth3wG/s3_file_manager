@@ -21,7 +21,19 @@ builder.Services.AddDbContextPool<FileDbContext>(options =>
 builder.Services.AddSingleton<S3Service>();
 builder.Services.AddAntiforgery(options =>
 {
-    options.Cookie.Name = ".AspNetCore.Antiforgery.4-a-mNcJ_3w";
+    options.HeaderName = "RequestVerificationToken";
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(b =>
+    {
+        b
+            .WithOrigins(builder.Configuration["App:FrontendDomain"])
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
 });
 
 var app = builder.Build();
@@ -36,6 +48,7 @@ if (app.Environment.IsDevelopment())
 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
 
 app.UseAntiforgery();
+app.UseCors();
 
 app.MapGet("antiforgery/token", (IAntiforgery forgeryService, HttpContext context) =>
 {

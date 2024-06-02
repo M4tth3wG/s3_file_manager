@@ -1,0 +1,35 @@
+.file-table {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  .file-table h2 {
+    margin-bottom: 20px;
+  }
+  
+  .file-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .file-table table, th, td {
+    border: 1px solid #ddd;
+  }
+  
+  .file-table th, td {
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .file-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .file-table .icon {
+    margin-right: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  
