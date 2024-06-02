@@ -3,14 +3,39 @@ import './App.css';
 import FileList from './components/FileList';
 import FileUpload from './components/FIleUpload';
 import React from 'react'
+import { useState, useEffect } from 'react';
 
 export const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
+  const [files, setFiles] = useState([]);
+
+  const fetchFiles = async () => {
+    try {
+      const response = await fetch(`${API_URL}/file/list`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const jsonData = await response.json();
+      setFiles(jsonData);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
   return (
     <div className="App">
-      <FileList/>
-      <FileUpload/>
+      <FileList files={files} setFiles={setFiles} fetchFiles={fetchFiles} />
+      <FileUpload fetchFiles={fetchFiles} />
     </div>
   );
 }

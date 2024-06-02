@@ -3,67 +3,44 @@ import './css/FileList.css';
 import { API_URL } from "../App";
 import Modal from "./Modal";
 
-function FileList(){
-  const [files, setFiles] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [userInput, setUserInput] = useState('');
-  const [currentFile, setCurrentFile] = useState(null);
+function FileList({ files, setFiles, fetchFiles }){
+    const [showModal, setShowModal] = useState(false);
+    const [userInput, setUserInput] = useState('');
+    const [currentFile, setCurrentFile] = useState(null);
 
-  const handleOpenModal = (file) => {
-    setCurrentFile(file);
-    setUserInput(file.name);
-    setShowModal(true);
-  };
+    const handleOpenModal = (file) => {
+      setCurrentFile(file);
+      setUserInput(file.name);
+      setShowModal(true);
+    };
 
-  const handleCloseModal = () => setShowModal(false);
+    const handleCloseModal = () => setShowModal(false);
 
-  const handleSaveInput = (input) => {
-    if (currentFile) {
-      const renameFile = async () => {
-        try {
-            const response = await fetch(`${API_URL}/file/edit?fileId=${currentFile.id}&newName=${input}`,
-            {
-                method: 'GET',
-            });
-          if (!response.ok) {
-            throw new Error('Failed to rename file.');
-          }
-
-          setFiles(files.map(file => 
-            file.id === currentFile.id ? { ...file, name: input } : file
-          ));
-
-        } catch (error) {
-          console.log(error.message);
-        };
-      }
-      renameFile(); 
-    }
-    setShowModal(false);
-  };
-
-  useEffect(() => {
-      const fetchFiles = async () => {
+    const handleSaveInput = (input) => {
+      if (currentFile) {
+        const renameFile = async () => {
           try {
-              const response = await fetch(`${API_URL}/file/list`,
+              const response = await fetch(`${API_URL}/file/edit?fileId=${currentFile.id}&newName=${input}`,
               {
                   method: 'GET',
-                  headers: {
-                      'Content-Type': 'application/json'
-                      // Add any other headers as needed
-                  }
               });
             if (!response.ok) {
-              throw new Error('Failed to fetch data');
+              throw new Error('Failed to rename file.');
             }
-            const jsonData = await response.json();
-            setFiles(jsonData);
+
+            setFiles(files.map(file => 
+              file.id === currentFile.id ? { ...file, name: input } : file
+            ));
+
           } catch (error) {
             console.log(error.message);
           };
+        }
+        renameFile(); 
       }
-      fetchFiles();
-    }, []);
+      setShowModal(false);
+    };
+
 
     const handleDownload = (file) => {
       const downloadFile = async () => {

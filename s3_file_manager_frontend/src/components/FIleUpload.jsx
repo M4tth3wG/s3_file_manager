@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../App';
 
-const FileUpload = () => {
+const FileUpload = ({ fetchFiles }) => {
     const [fileName, setFileName] = useState('');
     const [file, setFile] = useState(null);
     const [verificationToken, setVerificationToken] = useState('');
@@ -61,6 +61,7 @@ const FileUpload = () => {
 
             if (response.ok) {
                 console.log('File uploaded successfully');
+                fetchFiles();
             } else {
                 console.error('Failed to upload file');
             }
@@ -73,19 +74,19 @@ const FileUpload = () => {
     };
 
     return (
-        <div>
-        <input
-            type="text"
-            placeholder="Wprowadź nazwę pliku"
-            value={fileName}
-            onChange={handleFileNameChange}
-        />
-        <input
-            type="file"
-            onChange={handleFileChange}
-            ref={fileInputRef}
-        />
-        <button onClick={handleSubmit}>Wyślij</button>
+        <div className="file-upload-container">
+            <input
+                type="text"
+                placeholder="Wprowadź nazwę pliku"
+                value={fileName}
+                onChange={handleFileNameChange}
+            />
+            <input
+                type="file"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+            />
+            <button onClick={handleSubmit}>Wyślij</button>
         </div>
     );
 };
