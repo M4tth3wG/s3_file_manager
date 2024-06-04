@@ -44,7 +44,7 @@ const FileUpload = ({ fetchFiles }) => {
     const handleSubmit = async () => {
         if (!file) {
             console.error('No file selected');
-            return;
+           return; 
         }
 
         const formData = new FormData();

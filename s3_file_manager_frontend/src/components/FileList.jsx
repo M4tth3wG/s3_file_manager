@@ -99,28 +99,35 @@ function FileList({ files, setFiles, fetchFiles }){
     return (
     <div className="file-table">
       <h2>Przesłane pliki</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Nazwa pliku</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {files.map(file => (
-            <tr key={file.id}>
-              <td>{file.id}</td>
-              <td>{file.name}</td>
-              <td>
-                <span className="material-symbols-outlined icon" onClick={() => handleDownload(file)}>download</span>
-                <span className="material-symbols-outlined icon" onClick={() => handleEdit(file)}>edit</span>
-                <span className="material-symbols-outlined icon" onClick={() => handleDelete(file.id)}>delete</span>
-              </td>
+      {files && files.length > 0 ?
+        (
+          <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nazwa pliku</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {files.map(file => (
+              <tr key={file.id}>
+                <td>{file.id}</td>
+                <td>{file.name}</td>
+                <td>
+                  <span className="material-symbols-outlined icon" onClick={() => handleDownload(file)}>download</span>
+                  <span className="material-symbols-outlined icon" onClick={() => handleEdit(file)}>edit</span>
+                  <span className="material-symbols-outlined icon" onClick={() => handleDelete(file.id)}>delete</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+         ) :
+         (
+          <p>Brak plików</p>
+         )
+        } 
       <Modal show={showModal} handleClose={handleCloseModal} handleSave={handleSaveInput} title={"Edytuj nazwę pliku"} defaultValue={userInput}/>
     </div>
   );
